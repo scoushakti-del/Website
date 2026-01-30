@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy 19th, Mitali! ✨</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Plus+Jakarta+Sans:wght@300;400;600&family=Playfair+Display:ital,wght@0,600;1,700&display=swap" rel="stylesheet">
+    
+    <!-- Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        :root {
+            --soft-pink: #fff0f5;
+            --rose-gold: #e0b0ff;
+            --deep-rose: #d23669;
+            --accent-gold: #d4af37;
+            --glass: rgba(255, 255, 255, 0.7);
+            --text: #4a4a4a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--soft-pink);
+            color: var(--text);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        /* --- Romantic Background --- */
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #fff0f5 0%, #ffe4e1 100%);
+        }
+
+        .section {
+            height: 100vh;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            visibility: hidden;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .section.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* --- Typography --- */
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.5rem, 10vw, 4.5rem);
+            color: var(--deep-rose);
+            margin-bottom: 0.5rem;
+        }
+
+        .handwritten {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2rem;
+            color: var(--deep-rose);
+            margin-bottom: 1rem;
+        }
+
+        /* --- Glassmorphic Cards --- */
+        .card {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 30px;
+            padding: 2.5rem;
+            max-width: 500px;
+            box-shadow: 0 20px 40px rgba(210, 54, 105, 0.1);
+        }
+
+        /* --- Image Gallery --- */
+        .gallery-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            max-width: 600px;
+            margin: 2rem 0;
+        }
+
+        .photo-frame {
+            width: 100%;
+            aspect-ratio: 1;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 5px solid white;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            transform: rotate(var(--r));
+            transition: transform 0.3s ease;
+        }
+
+        .photo-frame:hover {
+            transform: rotate(0deg) scale(1.05);
+            z-index: 10;
+        }
+
+        .photo-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* --- Interactions --- */
+        .btn-romantic {
+            background: var(--deep-rose);
+            color: white;
+            padding: 1.2rem 2.5rem;
+            border-radius: 50px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(210, 54, 105, 0.3);
+            transition: 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-romantic:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(210, 54, 105, 0.5);
+        }
+
+        /* --- The 19th Cake --- */
+        .cake-box {
+            position: relative;
+            margin: 2rem 0;
+        }
+
+        .candle-19 {
+            font-size: 3rem;
+            font-weight: bold;
+            color: var(--deep-rose);
+            position: absolute;
+            top: -60px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+        }
+
+        .flame {
+            width: 12px;
+            height: 20px;
+            background: #ff9d00;
+            border-radius: 50% 50% 20% 20%;
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: burn 0.2s infinite alternate;
+            box-shadow: 0 0 15px #ff9d00;
+        }
+
+        @keyframes burn {
+            from { transform: translateX(-50%) scale(1); }
+            to { transform: translateX(-50%) scale(1.1); }
+        }
+
+        #heart-cursor {
+            pointer-events: none;
+            position: fixed;
+            z-index: 9999;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="bg-canvas"></canvas>
+
+    <!-- STEP 1: Entrance -->
+    <section id="step-1" class="section active">
+        <div class="handwritten">January 31st, 2026</div>
+        <h1>Happy 19th Birthday, Mitali</h1>
+        <p style="margin-bottom: 2rem;">A special day for the most beautiful soul.</p>
+        <button class="btn-romantic" onclick="nextStep(2)">Begin the Journey ❤️</button>
+    </section>
+
+    <!-- STEP 2: The Gallery -->
+    <section id="step-2" class="section">
+        <h2 class="handwritten">19 Years of Magic</h2>
+        <div class="gallery-container">
+            <!-- REPLACE THESE URLS WITH MITALI'S PHOTOS -->
+            <div class="photo-frame" style="--r: -3deg;">
+                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400" alt="Mitali 1">
+            </div>
+            <div class="photo-frame" style="--r: 2deg;">
+                <img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?q=80&w=400" alt="Mitali 2">
+            </div>
+            <div class="photo-frame" style="--r: -2deg;">
+                <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=400" alt="Mitali 3">
+            </div>
+            <div class="photo-frame" style="--r: 4deg;">
+                <img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?q=80&w=400" alt="Mitali 4">
+            </div>
+        </div>
+        <p>Every moment with you is a treasure.</p>
+        <button class="btn-romantic" onclick="nextStep(3)">Make a Wish</button>
+    </section>
+
+    <!-- STEP 3: The Cake/Wish -->
+    <section id="step-3" class="section">
+        <h1>Wish for 19</h1>
+        <p>Blow into the microphone or click the flames to blow them out!</p>
+        
+        <div class="cake-box" onclick="blowOut()">
+            <div class="candle-19">
+                <div style="position:relative">1<div class="flame"></div></div>
+                <div style="position:relative">9<div class="flame"></div></div>
+            </div>
+            <svg width="200" height="120" viewBox="0 0 200 120">
+                <path d="M20,100 Q20,80 100,80 T180,100 L180,120 L20,120 Z" fill="#ffb6c1" />
+                <rect x="30" y="50" width="140" height="40" rx="10" fill="#f08080" />
+            </svg>
+        </div>
+        
+        <div id="mic-label" style="font-size: 0.9rem; color: var(--deep-rose);">Ready for your wish...</div>
+        
+        <div id="after-wish" style="display:none; margin-top: 2rem;">
+            <button class="btn-romantic" onclick="nextStep(4)">Read My Message</button>
+        </div>
+    </section>
+
+    <!-- STEP 4: The Final Letter -->
+    <section id="step-4" class="section">
+        <div class="card">
+            <h2 class="handwritten">Dearest Mitali,</h2>
+            <div style="text-align: left; line-height: 1.8; color: #555; margin: 1.5rem 0;">
+                Today you turn 19, and the world is so much brighter because you're in it. 
+                May this year bring you as much joy as you give to everyone around you. 
+                On this 31st of January, I want you to know how truly special you are. 
+                Here's to a year of dreams coming true, endless laughter, and love.<br><br>
+                Happy Birthday, beautiful! ✨
+            </div>
+            <p style="font-weight: bold; color: var(--deep-rose);">— With Love</p>
+            <button class="btn-romantic" onclick="restart()">See it again? ❤️</button>
+        </div>
+    </section>
+
+    <script>
+        /* --- Floating Hearts Background --- */
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        let hearts = [];
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        class Heart {
+            constructor() {
+                this.reset();
+            }
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = canvas.height + 20;
+                this.size = Math.random() * 15 + 10;
+                this.speed = Math.random() * 1 + 0.5;
+                this.opacity = Math.random() * 0.5 + 0.2;
+                this.swing = Math.random() * 2;
+            }
+            update() {
+                this.y -= this.speed;
+                this.x += Math.sin(this.y / 30) * 0.5;
+                if (this.y < -20) this.reset();
+            }
+            draw() {
+                ctx.fillStyle = `rgba(210, 54, 105, ${this.opacity})`;
+                ctx.font = `${this.size}px serif`;
+                ctx.fillText('❤️', this.x, this.y);
+            }
+        }
+
+        function init() {
+            for (let i = 0; i < 30; i++) hearts.push(new Heart());
+            resize();
+            animate();
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            hearts.forEach(h => { h.update(); h.draw(); });
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('resize', resize);
+        init();
+
+        /* --- Navigation --- */
+        let currentStep = 1;
+        function nextStep(step) {
+            const cur = document.getElementById(`step-${currentStep}`);
+            const nxt = document.getElementById(`step-${step}`);
+            
+            gsap.to(cur, { opacity: 0, scale: 0.9, duration: 0.8, onComplete: () => {
+                cur.classList.remove('active');
+                nxt.classList.add('active');
+                gsap.fromTo(nxt, { opacity: 0, scale: 1.1 }, { opacity: 1, scale: 1, duration: 0.8 });
+                currentStep = step;
+                if (step === 3) startMic();
+                if (step === 4) fireConfetti();
+            }});
+        }
+
+        function restart() { location.reload(); }
+
+        /* --- Candle Logic --- */
+        async function startMic() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                const audioContext = new AudioContext();
+                const analyzer = audioContext.createAnalyser();
+                const mic = audioContext.createMediaStreamSource(stream);
+                mic.connect(analyzer);
+                analyzer.fftSize = 256;
+                const buffer = new Uint8Array(analyzer.frequencyBinCount);
+
+                function detect() {
+                    analyzer.getByteFrequencyData(buffer);
+                    const val = buffer.reduce((a, b) => a + b) / buffer.length;
+                    if (val > 50) {
+                        blowOut();
+                        stream.getTracks().forEach(t => t.stop());
+                    } else {
+                        requestAnimationFrame(detect);
+                    }
+                }
+                detect();
+                document.getElementById('mic-label').innerText = "I'm listening... Blow now! 🎤";
+            } catch (e) {
+                document.getElementById('mic-label').innerText = "Click the candles to blow them out!";
+            }
+        }
+
+        function blowOut() {
+            const flames = document.querySelectorAll('.flame');
+            gsap.to(flames, { opacity: 0, scale: 0, duration: 0.6, stagger: 0.2, onComplete: () => {
+                document.getElementById('mic-label').innerText = "Wish Sent to the Stars! ✨";
+                document.getElementById('after-wish').style.display = 'block';
+                fireConfetti();
+            }});
+        }
+
+        function fireConfetti() {
+            const end = Date.now() + 3000;
+            const colors = ['#d23669', '#f08080', '#ffffff'];
+
+            (function frame() {
+                confetti({
+                    particleCount: 3,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 },
+                    colors: colors
+                });
+                confetti({
+                    particleCount: 3,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 },
+                    colors: colors
+                });
+                if (Date.now() < end) requestAnimationFrame(frame);
+            }());
+        }
+
+        // Add a soft entrance for the first screen
+        gsap.from("#step-1 h1", { y: 30, opacity: 0, duration: 1, delay: 0.5 });
+    </script>
+</body>
+</html>
